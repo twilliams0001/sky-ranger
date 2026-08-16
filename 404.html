@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sky Ranger</title>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var c = (params.get("c") || params.get("code") || "").toUpperCase().replace(/[^A-HJ-NP-Z]/g, "").slice(0, 6);
+      if (/^[A-HJ-NP-Z]{6}$/.test(c)) {
+        location.replace("./lobby.html?c=" + encodeURIComponent(c));
+      } else {
+        location.replace("./");
+      }
+    })();
+  </script>
+</head>
+<body><p>Loading Sky Ranger…</p></body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Play Sky Ranger Free Online — Best Browser Flight Combat</title>
+  <meta name="description" content="Play Sky Ranger free in your browser — cinematic carrier ops, dogfights, waves, and no download." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://twilliams0001.github.io/sky-ranger/play.html" />
+  <meta property="og:title" content="Play Sky Ranger Free Online" />
+  <meta property="og:description" content="Cinematic flight combat in your browser. No download." />
+  <meta name="theme-color" content="#02060c" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <div class="play-shell">
+    <canvas id="game-canvas" aria-label="Sky Ranger game view"></canvas>
+
+    <div class="hud" aria-live="polite">
+      <div class="hud-top">
+        <div class="hud-stack">
+          <div class="hud-chip" id="hud-score">SCORE 0</div>
+          <div class="hud-chip quiet" id="hud-best">BEST 0</div>
+        </div>
+        <div class="hud-stack center">
+          <div class="hud-chip brand"><a href="./">SKY RANGER</a></div>
+          <div class="hud-chip quiet" id="hud-wave">WAVE 1</div>
+        </div>
+        <div class="hud-stack right">
+          <div class="hud-chip" id="hud-speed">0 kn</div>
+          <div class="hud-chip" id="hud-alt">0 ft</div>
+        </div>
+      </div>
+
+      <div class="reticle" id="reticle" aria-hidden="true"></div>
+      <canvas class="radar" id="radar" width="140" height="140" aria-label="Radar"></canvas>
+
+      <div class="bars">
+        <div class="bar"><span>HP</span><div class="track"><i id="hp-fill"></i></div></div>
+        <div class="bar"><span>AB</span><div class="track"><i id="ab-fill"></i></div></div>
+      </div>
+
+      <div class="hud-bottom">
+        <div class="touch-pad touch-only" id="stick" aria-label="Flight stick"></div>
+        <div class="hud-msg" id="hud-msg">Ready</div>
+        <div class="touch-actions touch-only">
+          <button class="fire-btn secondary" id="missile-btn" type="button">MSL</button>
+          <button class="fire-btn" id="fire-btn" type="button">GUNS</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay-panel" id="start-overlay">
+      <div class="overlay-card wide">
+        <p class="eyebrow">FREE · NO DOWNLOAD · BROWSER</p>
+        <h1>SKY RANGER</h1>
+        <p class="lead">Carrier launch. Ocean war. Survive the waves.</p>
+        <ul class="feature-list">
+          <li>Afterburner dogfights with guns + missiles</li>
+          <li>Enemy AI that hunts you</li>
+          <li>Wave missions · combos · high scores</li>
+        </ul>
+        <p class="controls-line">WASD / arrows · Shift afterburner · Space guns · F missiles · mouse look optional</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="start-btn" type="button">Launch Sortie</button>
+          <a class="btn btn-ghost" href="./">Home</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay-panel hidden" id="dead-overlay">
+      <div class="overlay-card">
+        <h1>DOWN</h1>
+        <p id="dead-reason">Mission failed.</p>
+        <p>Score <strong id="dead-score">0</strong> · Best <strong id="dead-best">0</strong></p>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="again-btn" type="button">Re-launch</button>
+          <a class="btn btn-ghost" href="./">Home</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay-panel hidden" id="wave-overlay">
+      <div class="overlay-card">
+        <p class="eyebrow" id="wave-title">WAVE 2</p>
+        <h1 id="wave-name">INBOUND</h1>
+        <p id="wave-blurb">More bandits. Stay sharp.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="wave-btn" type="button">Engage</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

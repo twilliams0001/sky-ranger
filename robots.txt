@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://twilliams0001.github.io/sky-ranger/sitemap.xml

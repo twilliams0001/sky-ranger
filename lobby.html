@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sky Ranger Lobbies — Join with a Code</title>
+  <meta name="description" content="Join a Sky Ranger multiplayer lobby with a public invite code. Play the free browser game or open the native app." />
+  <meta name="robots" content="index, follow" />
+  <meta name="referrer" content="no-referrer" />
+  <link rel="canonical" href="https://twilliams0001.github.io/sky-ranger/lobby.html" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .lobby-wrap { min-height: 80vh; display:grid; place-items:center; padding:24px; }
+    .lobby-card {
+      width: min(440px, 100%);
+      padding: 28px 24px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .code {
+      margin: 18px 0 8px;
+      font-size: clamp(34px, 9vw, 48px);
+      letter-spacing: 0.2em;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .hint { color: var(--mist); font-size: 14px; line-height: 1.45; }
+    .error { color: #d96464; font-size: 13px; display:none; margin: 0 0 12px; }
+    .error.show { display:block; }
+    input.code-input {
+      width: 100%;
+      margin: 0 0 10px;
+      padding: 14px;
+      border: 1px solid rgba(184,199,212,0.35);
+      background: rgba(0,0,0,0.25);
+      color: #fff;
+      font: inherit;
+      font-size: 22px;
+      letter-spacing: 0.2em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .actions { display:grid; gap:10px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <a class="brand" href="./">SKY RANGER</a>
+    <div class="nav-links">
+      <a href="play.html">Play Free</a>
+      <a href="lobby.html">Lobbies</a>
+    </div>
+  </nav>
+
+  <div class="lobby-wrap">
+    <main class="lobby-card">
+      <h1 style="margin:0;letter-spacing:0.12em;font-size:28px">LOBBY</h1>
+      <p class="hint" id="subtitle">Enter a 6-letter code or open a shared invite link.</p>
+      <p class="error" id="error" role="alert"></p>
+
+      <div id="with-code" hidden>
+        <div class="code" id="code-display">------</div>
+        <p class="hint">Native app multiplayer invite. Play free in browser anytime.</p>
+        <div class="actions">
+          <a class="btn btn-primary" id="open-app" href="#">Open in Sky Ranger App</a>
+          <button class="btn btn-ghost" id="copy-link" type="button">Copy public link</button>
+          <a class="btn btn-ghost" href="play.html">Play Free in Browser</a>
+        </div>
+      </div>
+
+      <div id="no-code">
+        <input class="code-input" id="code-input" maxlength="6" placeholder="CODE" autocomplete="off" spellcheck="false" />
+        <div class="actions">
+          <button class="btn btn-primary" id="go-btn" type="button">Open Lobby Invite</button>
+          <a class="btn btn-ghost" href="play.html">Skip — Play Free Now</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      var CODE_RE = /^[A-HJ-NP-Z]{6}$/;
+      function sanitize(raw) {
+        var cleaned = String(raw || "").toUpperCase().replace(/[^A-HJ-NP-Z]/g, "").slice(0, 6);
+        return CODE_RE.test(cleaned) ? cleaned : "";
+      }
+      function setText(id, v) { var el = document.getElementById(id); if (el) el.textContent = String(v); }
+      function showError(msg) {
+        var el = document.getElementById("error");
+        el.textContent = msg || "";
+        el.classList.toggle("show", !!msg);
+      }
+      function publicURL(code) {
+        return location.origin + location.pathname.replace(/lobby\.html$/i, "") + "lobby.html?c=" + encodeURIComponent(code);
+      }
+      function deepLink(code) { return "skyranger://lobby/" + sanitize(code); }
+      function show(code) {
+        var safe = sanitize(code);
+        if (!safe) { showError("Invalid lobby code."); return; }
+        showError("");
+        document.getElementById("with-code").hidden = false;
+        document.getElementById("no-code").hidden = true;
+        setText("code-display", safe);
+        setText("subtitle", "You’re invited to a Sky Ranger lobby.");
+        var a = document.getElementById("open-app");
+        a.setAttribute("href", deepLink(safe));
+        document.title = "Sky Ranger Lobby " + safe;
+      }
+      var params = new URLSearchParams(location.search);
+      var code = sanitize(params.get("c") || params.get("code") || "");
+      if (code) show(code);
+      else if (location.search.indexOf("c=") !== -1) showError("That lobby link is invalid.");
+
+      document.getElementById("go-btn").addEventListener("click", function () {
+        var next = sanitize(document.getElementById("code-input").value);
+        if (!next) { showError("Enter a valid 6-letter code."); return; }
+        location.assign(publicURL(next));
+      });
+      document.getElementById("code-input").addEventListener("input", function (e) {
+        var v = String(e.target.value || "").toUpperCase().replace(/[^A-HJ-NP-Z]/g, "").slice(0, 6);
+        if (e.target.value !== v) e.target.value = v;
+      });
+      document.getElementById("copy-link").addEventListener("click", function () {
+        var c = sanitize(document.getElementById("code-display").textContent);
+        var url = publicURL(c);
+        if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () {
+          setText("copy-link", "Copied");
+          setTimeout(function () { setText("copy-link", "Copy public link"); }, 1200);
+        });
+      });
+      document.getElementById("open-app").addEventListener("click", function (e) {
+        var href = this.getAttribute("href") || "";
+        if (!/^skyranger:\/\/lobby\/[A-HJ-NP-Z]{6}$/.test(href)) {
+          e.preventDefault();
+          showError("Blocked unsafe app link.");
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
